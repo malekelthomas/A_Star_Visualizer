@@ -1,5 +1,6 @@
 import pygame
 import sys
+import math
 
 class Block():
 	"""
@@ -10,6 +11,8 @@ class Block():
 		self.coords = []
 		self.status = "unvisited"
 		self.color = (137,125,125)
+		self.path_weight = 0
+		self.heuristic = 0
 	
 	def set_status(self, status):
 		self.status = status
@@ -20,6 +23,15 @@ class Block():
 	def set_coords(self, x, y):
 		self.coords.append(x)
 		self.coords.append(y)
+	
+	def set_path_weight(self, path_weight):
+		self.path_weight = path_weight
+	
+	def set_heuristic(self, heuristic):
+		self.heuristic = heuristic
+	
+	def get_heuristic(self):
+		return self.heuristic
 
 pygame.init()
 pygame.font.init()
@@ -57,7 +69,48 @@ def closest_val(num, num_list):
 	abs_diff_func = lambda list_val : abs(list_val-num)
 	closest = min(num_list, key=abs_diff_func)
 	return closest
+	
+def distance(start_point, end_point):
+	x1 = start_point[0]
+	x2 = end_point[0]
+	y1 = start_point[1]
+	y2 = end_point[1]
+	return int(10*math.sqrt((x2-x1)**2+(y2-y1)**2))/105		
+closed =[]
+visiting = []
+path = []
 
+def a_star(origin, end, grid1):
+	for point in grid:
+		if point.coords == origin:
+			point.set_heuristic(distance(origin,end))
+			point.set_color((128,0,128))
+			point.set_status("visited")
+			visiting.append(point)
+			drawGrid()
+			
+	while(True):
+			if any(x.coords == end for x in visiting):
+				break
+			for point in grid1:
+				if distance(point.coords, visiting[0].coords) == 10 or distance(point.coords, visiting[0].coords) == 14:
+					if point in visiting:
+						break
+					if point.status == "null":
+						break
+					point.set_path_weight(point.path_weight+distance(point.coords, visiting[0].coords))
+					point.set_heuristic(distance(point.coords, end)+point.path_weight)
+					point.set_status("visited")
+					point.set_color((0,16,128))
+					visiting.append(point)
+					drawGrid()
+				
+			visiting[0].set_color((54,43,215))
+			closed.append(visiting.pop(0))
+			drawGrid()
+			visiting.sort(key=lambda block: block.get_heuristic())
+					
+			
 drawGrid()
 
 origin_set = False
@@ -101,7 +154,7 @@ while True:
 						end_coords.append(block.coords[1])
 				drawGrid()
 	
-	if obstacles_set == False and obstacle_count <10:
+	elif obstacles_set == False and obstacle_count <10:
 		for event in pygame.event.get():
 			if event.type == pygame.FINGERUP:
 				x_closest = closest_val(1440*event.x, x_coords)
@@ -112,6 +165,11 @@ while True:
 						block.set_color((0,0,0))
 						obstacle_count+=1
 				drawGrid()
+	else:
+		a_star(origin_coords, end_coords, grid)
+		for i in closed:
+			i.set_color((0,128,0)) 
+	
 				
 
 					

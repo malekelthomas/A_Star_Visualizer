@@ -80,9 +80,9 @@ def closest_val(num, num_list):
 	closest = min(num_list, key=abs_diff_func)
 	return closest
 
-def a_star(origin, end, grid):
+def a_star(origin, end, grid1):
 
-	for block in grid:
+	for block in grid1:
 		if block.coords == end:
 				break
 		if block.coords == origin:
