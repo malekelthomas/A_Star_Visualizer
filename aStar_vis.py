@@ -26,7 +26,7 @@ pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 100)
 
 
-size = width, height = 13,20
+size = width, height = 400,400
 
 screen = pygame.display.set_mode(size)
 green = (50,205,50)

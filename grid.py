@@ -11,7 +11,6 @@ closed =[]
 visiting = []
 path = []
 
-print(distance([0,0],[1,1]))
 def a_star(origin, end, grid):
 	for block in grid:
 		if block.coords == origin:
