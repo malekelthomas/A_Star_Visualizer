@@ -62,11 +62,13 @@ while(True):
 	if any(x.coords == end for x in visiting):
 		break
 	
-	current_coords = tuple(visiting[0].coords)
-	
+	current_coords = visiting[0].coords
+	print("cur", current_coords)
 	for point in grid:
+		if grid[point] in visiting:
+			continue
 		if grid[point].coords[0] == current_coords[0]+105 and grid[point].coords[1] == current_coords[1]:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -75,7 +77,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0]-105 and grid[point].coords[1] == current_coords[1]:
-			if list(current_coords)== origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -84,7 +86,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0] and grid[point].coords[1] == current_coords[1]+105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -93,7 +95,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0] and grid[point].coords[1] == current_coords[1]-105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -102,7 +104,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0]-105 and grid[point].coords[1] == current_coords[1]-105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -111,7 +113,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0]+105 and grid[point].coords[1] == current_coords[1]-105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -120,7 +122,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0]-105 and grid[point].coords[1] == current_coords[1]+105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -129,7 +131,7 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 		elif grid[point].coords[0] == current_coords[0]+105 and grid[point].coords[1] == current_coords[1]+105:
-			if list(current_coords) == origin:
+			if current_coords == origin:
 				grid[point].set_path_weight(distance(point, current_coords))
 			else:
 				grid[point].set_path_weight(visiting[0].path_weight+distance(point,current_coords))
@@ -138,17 +140,20 @@ while(True):
 			grid[point].set_color((128,0,128))
 			visiting.append(grid[point])
 	
-	visiting[0].set_color((54,43,215))
-	visiting[0].set_status("closed")
-	closed.append(visiting.pop(0))
+	if visiting[0] not in closed:
+		visiting[0].set_color((54,43,215))
+		visiting[0].set_status("closed")
+		closed.append(visiting.pop(0))
+	
+	for i in closed:
+		print(i.coords, i.status)
+	print("-----------")
 	visiting.sort(key=lambda block:block.get_heuristic())
 		
-"""	
-for i in visiting:
+
+for i in closed:
 	print(i.status, i.coords, i.path_weight,i.get_heuristic(), distance(i.coords, end))
 
 print("closed---------")
 for i in closed:
 	print(i.status, i.coords, i.path_weight, i.get_heuristic(), distance(i.coords, end))
-	
-"""
