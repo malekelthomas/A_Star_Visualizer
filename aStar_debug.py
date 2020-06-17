@@ -92,6 +92,8 @@ while(True):
 		visiting[0].set_color((54,43,215))
 		closed.append(visiting.pop(0))
 		visiting.sort(key=lambda block: block.get_heuristic())
-					
 
+print("-------------------------------")
+for i in closed:
+			print(i.coords)
 			
