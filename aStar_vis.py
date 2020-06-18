@@ -9,29 +9,267 @@ class Block():
 	
 	def __init__(self):
 		self.coords = []
-		self.status = "unvisited"
+		self.status = "blank"
 		self.color = (137,125,125)
-		self.path_weight = 0
-		self.heuristic = 0
+		self.g_cost = 0
+		self.h_cost = 0
+		self.f_cost = 0
+		self.point_came_from = []
 	
 	def set_status(self, status):
 		self.status = status
 	
-	def set_color(self, color):
-		self.color = color
-		
+	def set_color(self):
+		if self.status == "origin":
+			self.color = (128,0,128)
+		if self.status == "end":
+			self.color = (128,0,128)
+		elif self.status == "unvisited":
+			self.color = (255,255,255)
+		elif self.status == "visited":
+			self.color = (33,208,196)
+		elif self.status == "closed":
+			self.color = (208,33,33)
+		elif self.status == "path":
+			self.color = (57,208,33)
+	
 	def set_coords(self, x, y):
 		self.coords.append(x)
 		self.coords.append(y)
 	
-	def set_path_weight(self, path_weight):
-		self.path_weight = path_weight
+	def set_g_cost(self, g_cost):
+		self.g_cost = g_cost
 	
-	def set_heuristic(self, heuristic):
-		self.heuristic = heuristic
+	def set_h_cost(self, h_cost):
+		self.h_cost = h_cost
+
+	def set_f_cost(self):
+		self.f_cost = self.g_cost+self.h_cost
 	
-	def get_heuristic(self):
-		return self.heuristic
+	def get_f_cost(self):
+		return self.f_cost
+
+def distance(start_point, end_point):
+	x1 = start_point[0]
+	x2 = end_point[0]
+	y1 = start_point[1]
+	y2 = end_point[1]
+	return int(10*math.sqrt((x2-x1)**2+(y2-y1)**2))/105	
+
+def drawGrid(grid1):
+	for point in grid1:
+		pygame.draw.rect(screen, grid1[point].color, pygame.Rect(point[0], point[1], 100, 100))	
+
+def closest_val(num, num_list):
+	""" Finds the closest value in the list. The lambda function will compute the difference between the number provided and each number in the list and the min function will find the number in the list with the smallest difference.
+	
+	"""
+	abs_diff_func = lambda list_val : abs(list_val-num)
+	closest = min(num_list, key=abs_diff_func)
+	return closest
+
+def a_star(origin, end, grid1, visited, unvisited, checked):
+	for point in grid1:
+		if list(point) == origin:
+			grid1[point].set_h_cost(distance(origin,end))
+			grid1[point].set_f_cost()
+			grid1[point].set_status("origin")
+			grid1[point].set_color()
+			visited.append(grid1[point])
+
+	while(True):
+		
+		current_coords = visited[0].coords
+		print("cur", current_coords, grid1[tuple(current_coords)].get_f_cost())
+		for point in grid1:
+			if grid1[point] in zip(visited,checked):
+				continue
+			if grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]+105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]-105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]-105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]-105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]+105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]+105:
+				if list(point) == end:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+					grid1[point].set_h_cost(distance(point, end))
+					grid1[point].set_f_cost()
+					grid1[point].set_status("end")
+					grid1[point].set_color()
+					grid1[tuple(current_coords)].set_status("closed")
+					grid1[tuple(current_coords)].set_color()
+					checked.append(grid1[tuple(current_coords)])
+					checked.append(grid1[point])
+					break
+				elif current_coords == origin:
+					grid1[point].set_g_cost(distance(point, current_coords))
+				else:
+					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
+				grid1[point].set_h_cost(distance(point, end))
+				grid1[point].set_f_cost()
+				grid1[point].set_status("unvisited")
+				grid1[point].set_color()
+				unvisited.append(grid1[point])
+		
+		if grid1[tuple(end)] in checked:
+			break
+
+		visited[0].set_status("closed")
+		visited[0].set_color()	
+		closed.append(visited.pop(0))
+		
+		for i in unvisited:
+			print(i.coords, i.status)
+		print("-----------sorted")
+		unvisited.sort(key=lambda point:point.get_f_cost())
+		for i in unvisited:
+			print(i.coords, i.status)
+		print("-----------------")
+		unvisited[0].set_status("visited")
+		unvisited[0].set_color()
+		visited.append(unvisited.pop(0))
 
 pygame.init()
 pygame.font.init()
@@ -44,73 +282,24 @@ screen = pygame.display.set_mode(size)
 green = (50,205,50)
 col = (100,20,30)
 
-grid =[]
+grid ={}
 
 for i in range(width):
 	for j in range(height):
-		block = Block()
-		block.set_coords(105*i,105*j)
-		grid.append(block)
+		b = Block()
+		b.set_coords(105*i, 105*j)
+		grid[(105*i,105*j)] = b
 
 
-				
-def drawGrid(grid1):
-	for b in grid1:
-		pygame.draw.rect(screen, b.color, pygame.Rect(b.coords[0], b.coords[1], 100, 100))
+x_coords = [block[0] for block in grid]
+y_coords = [block[1] for block in grid]						
 
-x_coords = [block.coords[0] for block in grid]
-y_coords = [block.coords[1] for block in grid]						
-			
-			
-def closest_val(num, num_list):
-	""" Finds the closest value in the list. The lambda function will compute the difference between the number provided and each number in the list and the min function will find the number in the list with the smallest difference.
-	
-	"""
-	abs_diff_func = lambda list_val : abs(list_val-num)
-	closest = min(num_list, key=abs_diff_func)
-	return closest
-	
-def distance(start_point, end_point):
-	x1 = start_point[0]
-	x2 = end_point[0]
-	y1 = start_point[1]
-	y2 = end_point[1]
-	return int(10*math.sqrt((x2-x1)**2+(y2-y1)**2))/105		
-closed =[]
-visiting = []
-path = []
 
-def a_star(origin, end, grid1):
-	for point in grid1:
-		if point.coords == origin:
-			point.set_heuristic(distance(origin,end))
-			point.set_color((128,0,128))
-			point.set_status("visited")
-			visiting.append(point)
-			drawGrid(grid1)
-			
-	while(True):
-			if any(x.coords == end for x in visiting):
-				break
-			for point in grid1:
-				if distance(point.coords, visiting[0].coords) == 10 or distance(point.coords, visiting[0].coords) == 14:
-					if point in visiting:
-						break
-					if point.status == "null":
-						break
-					point.set_path_weight(point.path_weight+distance(point.coords, visiting[0].coords))
-					point.set_heuristic(distance(point.coords, end)+point.path_weight)
-					point.set_status("visited")
-					point.set_color((0,16,128))
-					visiting.append(point)
-					drawGrid(grid1)
-				
-			visiting[0].set_color((54,43,215))
-			closed.append(visiting.pop(0))
-			drawGrid(grid1)
-			visiting.sort(key=lambda block: block.get_heuristic())
-					
-			
+seen_unvisited= []
+seen_visited =[]
+closed = []
+shortest_path = []
+
 drawGrid(grid)
 
 origin_set = False
@@ -130,13 +319,13 @@ while True:
 				x_closest = closest_val(1440*event.x, x_coords)
 				y_closest = closest_val(2728*event.y, y_coords)
 				#x+=str(event)
-				for block in grid:
-					if block.coords == [x_closest, y_closest]:
-						block.set_status("origin")
-						block.set_color((255, 255,0))
+				for point in grid:
+					if point == (x_closest, y_closest):
+						grid[point].set_status("origin")
+						grid[point].set_color((255, 255,0))
 						origin_set = True
-						origin_coords.append(block.coords[0])
-						origin_coords.append(block.coords[1])
+						origin_coords.append(point[0])
+						origin_coords.append(point[1])
 				drawGrid(grid)
 	
 	if end_set == False:
@@ -145,13 +334,13 @@ while True:
 				x_closest = closest_val(1440*event.x, x_coords)
 				y_closest = closest_val(2728*event.y, y_coords)
 				#x+=str(event)
-				for block in grid:
-					if block.coords == [x_closest, y_closest]:
-						block.set_status("end")
-						block.set_color((255, 165,0))
-						end_set = True
-						end_coords.append(block.coords[0])
-						end_coords.append(block.coords[1])
+				for point in grid:
+					if point == (x_closest, y_closest):
+						grid[point].set_status("origin")
+						grid[point].set_color((255,165,0))
+						origin_set = True
+						origin_coords.append(point[0])
+						origin_coords.append(point[1])
 				drawGrid(grid)
 	
 	elif obstacles_set == False and obstacle_count <10:
@@ -159,16 +348,15 @@ while True:
 			if event.type == pygame.FINGERUP:
 				x_closest = closest_val(1440*event.x, x_coords)
 				y_closest = closest_val(2728*event.y, y_coords)
-				for block in grid:
-					if block.coords == [x_closest, y_closest] and block.status != "origin" and block.status != "end" and block.status != "null":
-						block.set_status("null")
-						block.set_color((0,0,0))
+				for point in grid:
+					if point == (x_closest, y_closest) and grid[point].status != "origin" and grid[point].status != "end" and grid[point].status != "null":
+						grid[point].set_status("null")
+						grid[point].set_color((0,0,0))
 						obstacle_count+=1
 				drawGrid(grid)
 	else:
-		a_star(origin_coords, end_coords, grid)
-		for i in closed:
-			i.set_color((0,128,0)) 
+		a_star(origin_coords, end_coords, grid, seen_visited, seen_unvisited, closed)
+		
 	
 				
 
