@@ -189,7 +189,7 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]-105:
 				if grid1[point].status == "null":
-					continue
+					break
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -214,7 +214,7 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]-105:
 				if grid1[point].status == "null":
-					continue
+					break
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -239,7 +239,7 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]+105:
 				if grid1[point].status == "null":
-					continue
+					break
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -264,7 +264,7 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]+105:
 				if grid1[point].status == "null":
-					continue
+					break
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
