@@ -32,6 +32,8 @@ class Block():
 			self.color = (208,33,33)
 		elif self.status == "path":
 			self.color = (57,208,33)
+		elif self.status == "null":
+			self.color = (0,0,0)
 	
 	def set_coords(self, x, y):
 		self.coords.append(x)
@@ -76,15 +78,18 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 			grid1[point].set_status("origin")
 			grid1[point].set_color()
 			visited.append(grid1[point])
+			drawGrid(grid1)
 
 	while(True):
-		
+		pygame.display.flip()
 		current_coords = visited[0].coords
 		print("cur", current_coords, grid1[tuple(current_coords)].get_f_cost())
 		for point in grid1:
-			if grid1[point] in zip(visited,checked):
+			if grid1[point] in zip(visited,checked) or grid1[point].status == "null":
 				continue
 			if grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -95,6 +100,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -106,6 +113,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -116,6 +125,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -127,6 +138,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]+105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -137,6 +150,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -148,6 +163,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]-105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -158,6 +175,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -169,6 +188,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]-105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -179,6 +200,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -190,6 +213,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]-105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -200,6 +225,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -211,6 +238,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]+105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -221,6 +250,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -232,6 +263,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_color()
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]+105:
+				if grid1[point].status == "null":
+					continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -242,6 +275,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 					grid1[tuple(current_coords)].set_color()
 					checked.append(grid1[tuple(current_coords)])
 					checked.append(grid1[point])
+					drawGrid(grid1)
+					pygame.display.flip()
 					break
 				elif current_coords == origin:
 					grid1[point].set_g_cost(distance(point, current_coords))
@@ -276,7 +311,7 @@ pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 100)
 
 
-size = width, height = 400,400
+size = width, height = 13,20
 
 screen = pygame.display.set_mode(size)
 green = (50,205,50)
@@ -322,7 +357,7 @@ while True:
 				for point in grid:
 					if point == (x_closest, y_closest):
 						grid[point].set_status("origin")
-						grid[point].set_color((255, 255,0))
+						grid[point].set_color()
 						origin_set = True
 						origin_coords.append(point[0])
 						origin_coords.append(point[1])
@@ -336,11 +371,11 @@ while True:
 				#x+=str(event)
 				for point in grid:
 					if point == (x_closest, y_closest):
-						grid[point].set_status("origin")
-						grid[point].set_color((255,165,0))
-						origin_set = True
-						origin_coords.append(point[0])
-						origin_coords.append(point[1])
+						grid[point].set_status("end")
+						grid[point].set_color()
+						end_set= True
+						end_coords.append(point[0])
+						end_coords.append(point[1])
 				drawGrid(grid)
 	
 	elif obstacles_set == False and obstacle_count <10:
@@ -351,9 +386,10 @@ while True:
 				for point in grid:
 					if point == (x_closest, y_closest) and grid[point].status != "origin" and grid[point].status != "end" and grid[point].status != "null":
 						grid[point].set_status("null")
-						grid[point].set_color((0,0,0))
+						grid[point].set_color()
 						obstacle_count+=1
-				drawGrid(grid)
+						drawGrid(grid)
+
 	else:
 		a_star(origin_coords, end_coords, grid, seen_visited, seen_unvisited, closed)
 		
