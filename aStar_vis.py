@@ -14,7 +14,7 @@ class Block():
 		self.g_cost = 0
 		self.h_cost = 0
 		self.f_cost = 0
-		self.point_came_from = []
+		self.point_came_from = ()
 	
 	def set_status(self, status):
 		self.status = status
@@ -47,6 +47,9 @@ class Block():
 
 	def set_f_cost(self):
 		self.f_cost = self.g_cost+self.h_cost
+	
+	def set_pcf(self, x,y):
+		self.point_came_from = (x,y)
 	
 	def get_f_cost(self):
 		return self.f_cost
@@ -90,6 +93,8 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 			if grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]:
 				if grid1[point].status == "null":
 					continue
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -111,10 +116,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]:
 				if grid1[point].status == "null":
 					continue
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -136,10 +144,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]+105:
 				if grid1[point].status == "null":
 					continue
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -161,10 +172,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0] and grid1[point].coords[1] == current_coords[1]-105:
 				if grid1[point].status == "null":
 					continue
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -186,10 +200,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]-105:
 				if grid1[point].status == "null":
 					break
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -211,10 +228,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]-105:
 				if grid1[point].status == "null":
 					break
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -236,10 +256,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]-105 and grid1[point].coords[1] == current_coords[1]+105:
 				if grid1[point].status == "null":
 					break
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -261,10 +284,13 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
 			elif grid1[point].coords[0] == current_coords[0]+105 and grid1[point].coords[1] == current_coords[1]+105:
 				if grid1[point].status == "null":
 					break
+				if grid1[point] in zip(visited,checked):
+						continue
 				if list(point) == end:
 					grid1[point].set_g_cost(visited[0].g_cost+distance(point,current_coords))
 					grid1[point].set_h_cost(distance(point, end))
@@ -286,25 +312,43 @@ def a_star(origin, end, grid1, visited, unvisited, checked):
 				grid1[point].set_f_cost()
 				grid1[point].set_status("unvisited")
 				grid1[point].set_color()
+				drawGrid(grid1)
 				unvisited.append(grid1[point])
+		
 		
 		if grid1[tuple(end)] in checked:
 			break
 
 		visited[0].set_status("closed")
-		visited[0].set_color()	
-		closed.append(visited.pop(0))
+		visited[0].set_color()
+		drawGrid(grid1)
+		if len(closed) != 0:
+			visited[0].set_pcf(checked[-1].coords[0], checked[-1].coords[1])#last element in closed/prev current point
+		checked.append(visited.pop(0))
 		
 		for i in unvisited:
 			print(i.coords, i.status)
 		print("-----------sorted")
+		
 		unvisited.sort(key=lambda point:point.get_f_cost())
+		
 		for i in unvisited:
 			print(i.coords, i.status)
 		print("-----------------")
+		
 		unvisited[0].set_status("visited")
 		unvisited[0].set_color()
+		drawGrid(grid1)
 		visited.append(unvisited.pop(0))
+		
+	point = tuple(checked[:-1].coords)
+	while(point != ()):
+		pygame.display.flip()
+		grid1[point].set_status("path")
+		grid1[point].set_color()
+		drawGrid(grid1)
+		point = tuple(grid[point].point_came_from)
+		
 
 pygame.init()
 pygame.font.init()
