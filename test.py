@@ -18,9 +18,9 @@ class Block():
 	
 	def set_color(self):
 		if self.status == "origin":
-			self.color == (128,0,128)
+			self.color = (128,0,128)
 		if self.status == "end":
-			self.color == (128,0,128)
+			self.color = (128,0,128)
 		elif self.status == "unvisited":
 			self.color = (255,255,255)
 		elif self.status == "visited":
