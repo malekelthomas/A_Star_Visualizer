@@ -70,10 +70,13 @@ class Block():
     def update_neighbors(self, grid):
         if self.row < self.row_total -1 and not grid[self.row +1][self.col].is_barrier(): #Block below
             self.neighbors.append(grid[self.row+1][self.col])
+        
         if self.row < self.row_total -1 and not grid[self.row -1][self.col].is_barrier(): #Block above
             self.neighbors.append(grid[self.row-1][self.col])
+        
         if self.row < self.row_total -1 and not grid[self.row][self.col-1].is_barrier(): #Block left
             self.neighbors.append(grid[self.row][self.col-1])
+        
         if self.row < self.row_total -1 and not grid[self.row][self.col+1].is_barrier(): #Block right
             self.neighbors.append(grid[self.row][self.col-1])
     
