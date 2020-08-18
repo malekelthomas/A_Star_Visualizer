@@ -2,7 +2,7 @@ import pygame
 import math
 from queue import PriorityQueue
 
-width = 800
+width = 1080
 window = pygame.display.set_mode((width,width))
 pygame.display.set_caption("A* ALGORITHM")
 
@@ -21,9 +21,6 @@ class Block():
         self.width = width
         self.coords = [self.x, self.y]
         self.row_total = row_total
-        self.g_cost = 0
-        self.h_cost = 0
-        self.f_cost = 0
         self.neighbors = []
         def set_status(self, status):
             self.status = status
@@ -63,6 +60,9 @@ class Block():
     
     def make_end(self):
         self.color = Grid_Colors["Purple"]
+    
+    def make_path(self):
+    	self.color = Grid_Colors["Cyan"]
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
@@ -71,13 +71,13 @@ class Block():
         if self.row < self.row_total -1 and not grid[self.row +1][self.col].is_barrier(): #Block below
             self.neighbors.append(grid[self.row+1][self.col])
         
-        if self.row < self.row_total -1 and not grid[self.row -1][self.col].is_barrier(): #Block above
+        if self.row > 0 and not grid[self.row -1][self.col].is_barrier(): #Block above
             self.neighbors.append(grid[self.row-1][self.col])
         
-        if self.row < self.row_total -1 and not grid[self.row][self.col-1].is_barrier(): #Block left
-            self.neighbors.append(grid[self.row][self.col-1])
+        if self.col < self.row_total -1 and not grid[self.row][self.col+1].is_barrier(): #Block right
+            self.neighbors.append(grid[self.row][self.col+1])
         
-        if self.row < self.row_total -1 and not grid[self.row][self.col+1].is_barrier(): #Block right
+        if self.col > 0 and not grid[self.row][self.col-1].is_barrier(): #Block left
             self.neighbors.append(grid[self.row][self.col-1])
     
     def __lt__(self, other): #comparing blocks
@@ -129,9 +129,62 @@ def get_clicked_pos(pos, rows, width):
     col = x // gap
 
     return row, col
-
+    
+def path_reconstruct(came_from, curr, draw):
+	while curr in came_from:
+		curr = came_from[curr]
+		curr.make_path()
+		draw()
+		
+def algo(draw, grid, start, end):
+	count = 0 #tie breaker for blocks with same f
+	open_set = PriorityQueue() #orders items by size
+	open_set.put((0, count, start)) 
+	came_from = {}
+	g_score = {block: float("inf") for row in grid for block in row} #every block has inf g & f 
+	g_score[start]= 0
+	f_score = {block: float("inf") for row in grid for block in row}
+	f_score[start] = h(start.get_pos(), end.get_pos()) #estimate of start->end distance
+	
+	open_set_hash = {start} #set to keep track of items in PriorityQueue
+	
+	while not open_set.empty():
+		#runs till path hasn't been found but all possible blocks visited
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				
+		curr = open_set.get()[2] #popping curr
+		open_set_hash.remove(curr) 
+		
+		if curr == end:
+			path_reconstruct(came_from, end, draw)
+			start.make_start()
+			end.make_end()
+			return True
+			
+		for neighbor in curr.neighbors:
+			temp_g = g_score[curr]+1 #edges are 1
+			
+			if temp_g < g_score[neighbor]:
+				#if the g_score via this neighbor is shorter
+				came_from[neighbor]=curr
+				g_score[neighbor]=temp_g
+				f_score[neighbor]=temp_g +h(neighbor.get_pos(), end.get_pos())
+				if neighbor not in open_set_hash:
+					count+=1
+					open_set.put((f_score[neighbor], count,neighbor))
+					open_set_hash.add(neighbor)
+					neighbor.make_open()
+		draw()
+		
+		if curr !=start:
+				#after checking start, next blocks will close after checking their neighbors
+				curr.make_closed()
+	return False
+	
 def main(win, width):
-    num_rows = 50
+    num_rows = 30
     grid = make_grid(num_rows, width)
 
     start = None #start block
@@ -177,7 +230,15 @@ def main(win, width):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not started:
-                    pass
+                    for row in grid:
+                    	for block in row:
+                    		block.update_neighbors(grid)
+                    		
+                    algo(lambda: draw(win, grid, num_rows, width), grid, start, end)
+                if event.type == pygame.K_c:
+                	start = None
+                	end = None
+                	grid = make_grid(num_rows, width)
     pygame.quit()
 
 main(window, width)
