@@ -2,7 +2,7 @@ import pygame
 import math
 from queue import PriorityQueue
 
-width = 1080
+width = 800
 window = pygame.display.set_mode((width,width))
 pygame.display.set_caption("A* ALGORITHM")
 
@@ -184,7 +184,7 @@ def algo(draw, grid, start, end):
 	return False
 	
 def main(win, width):
-    num_rows = 30
+    num_rows = 50
     grid = make_grid(num_rows, width)
 
     start = None #start block
@@ -229,16 +229,17 @@ def main(win, width):
                     end = None
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not started:
+                if event.key == pygame.K_SPACE and start and end:
                     for row in grid:
                     	for block in row:
                     		block.update_neighbors(grid)
                     		
                     algo(lambda: draw(win, grid, num_rows, width), grid, start, end)
-                if event.type == pygame.K_c:
-                	start = None
-                	end = None
-                	grid = make_grid(num_rows, width)
+                if event.key == pygame.K_c:
+                    print("pressed")
+                    start = None
+                    end = None
+                    grid = make_grid(num_rows, width)
     pygame.quit()
 
 main(window, width)
